@@ -3,6 +3,29 @@
 {% block title %}TimeLog index{% endblock %}
 
 {% block body %}
+<h1>Report Monthly</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Work Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mr_item in monthly_report %}
+            <tr>
+                <td>{{ mr_item.month }}/{{ mr_item.year }}</td>
+                <td>{{ mr_item.duration|date('H:i:s', '+00:00 GMT')  }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">Not enough data</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<br>
     <h1>TimeLog</h1>
 
     <table class="table">
@@ -40,4 +63,5 @@
 {% elseif latest.endTime is null %}
     <a class="btn btn-danger btn-lg" href="{{ path('time_log_end') }}">Stop</a>
 {% endif %}
+<pre>{{ dump(monthly_report) }}</pre>
 {% endblock %}
