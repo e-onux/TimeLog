@@ -32,6 +32,16 @@ class TimeLog
      */
     private $end_time;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="timeLogs")
+     */
+    private $project;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $duration;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +79,30 @@ class TimeLog
     public function setEndTime(?\DateTimeInterface $end_time): self
     {
         $this->end_time = $end_time;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): self
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(?int $duration): self
+    {
+        $this->duration = $duration;
 
         return $this;
     }

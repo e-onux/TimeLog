@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +28,16 @@ class Project
      * @ORM\Column(type="text", nullable=true)
      */
     private $project_description;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TimeLog::class, mappedBy="project")
+     */
+    private $timeLogs;
+
+    public function __construct()
+    {
+        $this->timeLogs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -54,5 +66,39 @@ class Project
         $this->project_description = $project_description;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|TimeLog[]
+     */
+    public function getTimeLogs(): Collection
+    {
+        return $this->timeLogs;
+    }
+
+    public function addTimeLog(TimeLog $timeLog): self
+    {
+        if (!$this->timeLogs->contains($timeLog)) {
+            $this->timeLogs[] = $timeLog;
+            $timeLog->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTimeLog(TimeLog $timeLog): self
+    {
+        if ($this->timeLogs->removeElement($timeLog)) {
+            // set the owning side to null (unless already changed)
+            if ($timeLog->getProject() === $this) {
+                $timeLog->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return $this->project_name;
     }
 }

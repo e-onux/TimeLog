@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TimeLog index{% endblock %}
+
+{% block body %}
+    <h1>TimeLog</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Work Day</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Project</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for time_log in time_logs %}
+            <tr>
+                <td>{{ time_log.workDay ? time_log.workDay|date("d/M/Y") : '' }}</td>
+                <td>{{ time_log.startTime ? time_log.startTime|date('d/M H:i') : '' }}</td>
+                <td>{{ time_log.endTime ? time_log.endTime|date('d/M H:i') : 'In Work' }}</td>
+                <td>{{ time_log.endTime ? time_log.project : '' }}</td>
+                <td><div class="btn-group" role="group">
+                    <a class="btn btn-info btn-sm" href="{{ path('time_log_edit', {'id': time_log.id}) }}">Edit</a>
+                    &nbsp;{{ include('time_log/_delete_form.html.twig') }}</div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% if not latest or latest.endTime is not null %}
+    <a class="btn btn-success btn-lg" href="{{ path('time_log_start') }}">Start</a>
+{% elseif latest.endTime is null %}
+    <a class="btn btn-danger btn-lg" href="{{ path('time_log_end') }}">Stop</a>
+{% endif %}
+{% endblock %}
