@@ -65,8 +65,9 @@ class TimeLogController extends AbstractController
             throw new \Exception("You must start a new work first.");
         }
         $entityManager = $this->getDoctrine()->getManager();
-
         $latest_time_log->setEndTime(new \DateTime());
+        $duration = $latest_time_log->getEndTime()->getTimestamp() - $latest_time_log->getStartTime()->getTimestamp();
+        $latest_time_log->setDuration($duration);
 
         // tell Doctrine you want to (eventually) save the Product (no queries yet)
         $entityManager->persist($latest_time_log);
@@ -75,39 +76,6 @@ class TimeLogController extends AbstractController
         $entityManager->flush();
 
         return $this->redirect($this->generateUrl('time_log_index'));
-    }
-
-    /**
-     * @Route("/new", name="time_log_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $timeLog = new TimeLog();
-        $form = $this->createForm(TimeLogType::class, $timeLog);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($timeLog);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('time_log_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('time_log/new.html.twig', [
-            'time_log' => $timeLog,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="time_log_show", methods={"GET"})
-     */
-    public function show(TimeLog $timeLog): Response
-    {
-        return $this->render('time_log/show.html.twig', [
-            'time_log' => $timeLog,
-        ]);
     }
 
     /**

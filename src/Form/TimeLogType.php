@@ -6,6 +6,8 @@ use App\Entity\TimeLog;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class TimeLogType extends AbstractType
 {
@@ -17,6 +19,16 @@ class TimeLogType extends AbstractType
             ->add('end_time')
             ->add('project')
         ;
+        $builder->addEventListener(FormEvents::SUBMIT, function(FormEvent $event) {
+            $data = $event->getData();
+            $form = $event->getForm();
+
+            if ($data->getEndTime()) {
+                $duration = $data->getEndTime()->getTimestamp() - $data->getStartTime()->getTimestamp();
+                $data->setDuration($duration);           
+                $event->setData($data);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -26,3 +38,5 @@ class TimeLogType extends AbstractType
         ]);
     }
 }
+
+
