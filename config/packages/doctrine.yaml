@@ -21,3 +21,5 @@ doctrine:
               day: DoctrineExtensions\Query\Mysql\Day
               month: DoctrineExtensions\Query\Mysql\Month
               year: DoctrineExtensions\Query\Mysql\Year
+            numeric_functions:
+              floor: DoctrineExtensions\Query\Mysql\Floor

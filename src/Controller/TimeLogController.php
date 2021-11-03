@@ -9,11 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use DoctrineExtensions\Query\Mysql\Month;
-use DoctrineExtensions\Query\Mysql\Year;
 
 /**
- * @Route("/time/log")
+ * @Route("/")
  */
 class TimeLogController extends AbstractController
 {
@@ -24,17 +22,14 @@ class TimeLogController extends AbstractController
     {
 
         $latest_time_log = $timeLogRepository->findBy(array(),array('id'=>'DESC'),1,0);
-        $monthly_report = $timeLogRepository
-        ->createQueryBuilder('tl')
-        ->select(' SUM(tl.duration) as duration, MONTH(tl.work_day) as month, YEAR(tl.work_day) as year')
-        ->groupBy('month')
-        ->addGroupBy('year')
-        ->getQuery()
-        ->getResult();
+        $monthly_report = $timeLogRepository->monthlyReport();
+        $daily_work_avg = $timeLogRepository->getDailyAverage();
+
         return $this->render('time_log/index.html.twig', [
             'time_logs' => $timeLogRepository->findAll(),
             'latest' => reset($latest_time_log),
             'monthly_report' => $monthly_report,
+            'daily_work_avg' => $daily_work_avg,
         ]);
     }
 
@@ -71,9 +66,6 @@ class TimeLogController extends AbstractController
     {
         $latest_time_log = $timeLogRepository->findBy(array(),array('id'=>'DESC'),1,0);
         $latest_time_log = reset($latest_time_log);
-        if(!$latest_time_log||!is_null($latest_time_log->getEndTime())){
-            throw new \Exception("You must start a new work first.");
-        }
         if(!$latest_time_log||!is_null($latest_time_log->getEndTime())){
             throw new \Exception("You must start a new work first.");
         }
