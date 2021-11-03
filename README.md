@@ -25,3 +25,11 @@ Start Server:
 
     php bin/console server:start
 Thats all...
+
+# Usage
+Time logging url:
+
+    /
+Project management url:
+
+    /project
