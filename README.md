@@ -12,6 +12,7 @@ Clone project and install it:
 
     git clone https://github.com/e-onux/TimeLog.git;
     cd TimeLog/;
+    composer install;
     
 Edit ***DATABASE_URL*** value of ***/.env*** file to connect database.
 
